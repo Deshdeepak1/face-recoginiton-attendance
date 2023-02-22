@@ -4,11 +4,10 @@ import uuid
 
 import aiofiles
 import aiofiles.os
-import face_recognition
+# import face_recognition
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
 
 from .db import User, get_db
 
@@ -20,8 +19,8 @@ templates = Jinja2Templates(directory="templates")
 @app.route("/", methods=["GET", "POST"])
 async def index(request: Request):
     users = await User.objects.all()
-    return HTMLResponse(
-        templates.TemplateResponse("index.html", {"request": request, "users": users})
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "users": users}
     )
 
 
@@ -47,6 +46,7 @@ async def update_post(
     user = await User.objects.get(id=id)
     user.name = name
     user.email = email
+    await user.update()
     return "/"
 
 
@@ -87,7 +87,6 @@ async def register(
     name: str,
     email: str,
     user_image_file: UploadFile = File(...),
-    db: Session = Depends(get_db),
 ):
     filename = str(uuid.uuid4())
     user_image_path = f"images/{filename}.jpg"
