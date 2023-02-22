@@ -4,9 +4,9 @@ services:
   web:
     build: .
     expose:
-      - 80
+      - 8000
     environment:
       - DATABASE_URL=sqlite:///attendance.db
     ports:
-      - 8080:80
+      - 8080:8000
 
