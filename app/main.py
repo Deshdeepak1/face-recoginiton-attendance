@@ -4,18 +4,49 @@ import uuid
 
 import aiofiles
 import aiofiles.os
-import face_recognition
-from fastapi import Depends, FastAPI, File, UploadFile
+# import face_recognition
+from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from .db import User, get_db
 
 app = FastAPI(title="Face Recognition based attendance system")
 
+templates = Jinja2Templates(directory="templates")
 
-@app.get("/")
-async def read_root():
-    return "Face Recognition based attendance system"
+
+@app.get("/reg", response_class=HTMLResponse)
+async def register_get(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+
+@app.post("/reg")
+async def register_post(
+    request: Request,
+    name: str = Form(...),
+    email: str = Form(...),
+    image: UploadFile = Form(...),
+):
+    res = await register(name, email, image)
+    return templates.TemplateResponse("register.html", {"request": request, "res": res})
+
+
+@app.get("/recog", response_class=HTMLResponse)
+async def recognize_get(request: Request):
+    return templates.TemplateResponse("recognition.html", {"request": request})
+
+
+@app.post("/recog")
+async def recog_post(
+    request: Request,
+    image: UploadFile = Form(...),
+):
+    res = await recognition(image)
+    return templates.TemplateResponse(
+        "recognition.html", {"request": request, "res": res}
+    )
 
 
 @app.post("/register")
@@ -35,11 +66,11 @@ async def register(
         success = False
     else:
         success = True
-        user_image = face_recognition.load_image_file(user_image_path)
-        user_face_encoding = face_recognition.face_encodings(user_image)[0]
-        user_encoding_path = f"encodings/{filename}.pkl"
-        async with aiofiles.open(user_encoding_path, "wb") as file:
-            await file.write(pickle.dumps(user_face_encoding))
+        # user_image = face_recognition.load_image_file(user_image_path)
+        # user_face_encoding = face_recognition.face_encodings(user_image)[0]
+        # user_encoding_path = f"encodings/{filename}.pkl"
+        # async with aiofiles.open(user_encoding_path, "wb") as file:
+        #     await file.write(pickle.dumps(user_face_encoding))
 
     return {"success": success}
 
