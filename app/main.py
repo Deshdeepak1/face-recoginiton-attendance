@@ -17,7 +17,7 @@ app = FastAPI(title="Face Recognition based attendance system")
 templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.route("/", methods=["GET", "POST"], response_class=HTMLResponse)
 async def index(request: Request):
     users = await User.objects.all()
     return templates.TemplateResponse(
@@ -63,7 +63,6 @@ async def register_post(
     image: UploadFile = Form(...),
 ):
     res = await register(name, email, image)
-    res = ["User Already Exists", "Registeration Successfull"][res["success"]]
     return templates.TemplateResponse("register.html", {"request": request, "res": res})
 
 
