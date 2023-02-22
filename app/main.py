@@ -4,9 +4,9 @@ import uuid
 
 import aiofiles
 import aiofiles.os
-import face_recognition
+# import face_recognition
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -19,7 +19,35 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    users = await User.objects.all()
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "users": users}
+    )
+
+
+@app.get("/delete/{id:int}", response_class=RedirectResponse)
+async def delete(id: int):
+    user = await User.objects.delete(id=id)
+    return "/"
+
+
+@app.get("/update/{id:int}", response_class=HTMLResponse)
+async def update_get(request: Request, id: int):
+    user = await User.objects.get(id=id)
+    return templates.TemplateResponse("update.html", {"request": request, "user": user})
+
+
+@app.post("/update/{id:int}", response_class=RedirectResponse)
+async def update_post(
+    request: Request,
+    id: int,
+    name: str = Form(...),
+    email: str = Form(...),
+):
+    user = await User.objects.get(id=id)
+    user.name = name
+    user.email = email
+    return "/"
 
 
 @app.get("/reg", response_class=HTMLResponse)
@@ -35,6 +63,7 @@ async def register_post(
     image: UploadFile = Form(...),
 ):
     res = await register(name, email, image)
+    res = ["User Already Exists", "Registeration Successfull"][res["success"]]
     return templates.TemplateResponse("register.html", {"request": request, "res": res})
 
 

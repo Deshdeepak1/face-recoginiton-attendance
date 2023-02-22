@@ -31,33 +31,14 @@
         </style>
     </head>
     <body>
-        <h1>Register</h1>
+        <h1>Update</h1>
         <div class="container">
         <form method="post" enctype="multipart/form-data">
             <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required><br>
+            <input type="text" id="name" name="name" value="{{ user.name }}" required><br>
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br>
-            <label for="image">Image:</label>
-            <input type="file" id="image" name="image" accept="image/*" required><br>
+            <input type="email" id="email" name="email" required value="{{ user.email }}"><br>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        {% if res %}
-        <div class="response">
-            {% if res["success"] %}
-            <div class="alert alert-success" role="alert">
-                Registeration Successfull.
-            </div>
-            {% elseif %}
-            <div class="alert alert-warning" role="alert">
-                User Already Exists.
-            </div>
-            {% endif %}
-        </div>
-        </div>
-        {% endif %}
-        <div class="other-btn">
-        <a href="/recog" class="btn btn-success">Recognition</a>
-        </div>
     </body>
 </html>

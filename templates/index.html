@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Face Recognition based attendance system</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+            .addbtn {
+                background-color: green;
+                color: white;
+            }
+            .upbtn {
+                background-color: yellow;
+                color: white;
+            }
+            .delbtn {
+                background-color: red;
+                color: white;
+            }
+            table {
+                margin: 20px auto;
+                font: 25px;
+                border-collapse: collapse;
+                width: 700px;
+            }
+            td {
+                text-align: center;
+                border: solid black;
+            }
+            div {
+                margin: 20px auto;
+                width: 500px;
+                text-align: center;
+                padding: 20px;
+            }
+            body {
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            div.container {
+                margin: 20px auto;
+                background-color: white;
+                padding: 20px;
+                width: 700px;
+            }
+            h1 {
+                margin: 10px auto;
+                text-align: center;
+            }
+        
+            
+        </style>
+    </head>
+    <body>
+        <h1>Face Recognition based attendance system</h1>
+        <div class="container">
+        {% if users %}
+        <table>
+            <thead>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Update</td>
+            <td>Delete</td>
+            </thead>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td><button class="upbtn"><a href="/update/{{ user.id }}">Update</a></button></td>
+                <td><button class="delbtn"><a href="/delete/{{ user.id }}">Delete</a></button></td>
+            </tr>
+        {% endfor %}
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                No data to display. Please register some users.
+            </div>
+        {% endif %}
+        </table>
+        </div>
+            <div>
+        <a href="/reg" class="btn btn-success">Register</a>
+        <a href="/recog" class="btn btn-success">Recognition</a>
+            </div>
+    </body>
+</html>
+
+
