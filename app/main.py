@@ -17,11 +17,11 @@ app = FastAPI(title="Face Recognition based attendance system")
 templates = Jinja2Templates(directory="templates")
 
 
-@app.route("/", methods=["GET", "POST"], response_class=HTMLResponse)
+@app.route("/", methods=["GET", "POST"])
 async def index(request: Request):
     users = await User.objects.all()
-    return templates.TemplateResponse(
-        "index.html", {"request": request, "users": users}
+    return HTMLResponse(
+        templates.TemplateResponse("index.html", {"request": request, "users": users})
     )
 
 
