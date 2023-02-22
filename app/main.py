@@ -4,7 +4,7 @@ import uuid
 
 import aiofiles
 import aiofiles.os
-# import face_recognition
+import face_recognition
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
