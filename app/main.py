@@ -4,7 +4,7 @@ import uuid
 
 import aiofiles
 import aiofiles.os
-# import face_recognition
+import face_recognition
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -15,6 +15,11 @@ from .db import User, get_db
 app = FastAPI(title="Face Recognition based attendance system")
 
 templates = Jinja2Templates(directory="templates")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get("/reg", response_class=HTMLResponse)
@@ -66,11 +71,11 @@ async def register(
         success = False
     else:
         success = True
-        # user_image = face_recognition.load_image_file(user_image_path)
-        # user_face_encoding = face_recognition.face_encodings(user_image)[0]
-        # user_encoding_path = f"encodings/{filename}.pkl"
-        # async with aiofiles.open(user_encoding_path, "wb") as file:
-        #     await file.write(pickle.dumps(user_face_encoding))
+        user_image = face_recognition.load_image_file(user_image_path)
+        user_face_encoding = face_recognition.face_encodings(user_image)[0]
+        user_encoding_path = f"encodings/{filename}.pkl"
+        async with aiofiles.open(user_encoding_path, "wb") as file:
+            await file.write(pickle.dumps(user_face_encoding))
 
     return {"success": success}
 
